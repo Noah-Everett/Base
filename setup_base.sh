@@ -1,0 +1,1 @@
+export BASE_DIR="/Users/noaheverett/Library/Mobile Documents/com~apple~CloudDocs/Documents/Codes/Base/setup_base.sh"
