@@ -1,1 +1,1 @@
-export BASE_DIR="/Users/noaheverett/Library/Mobile Documents/com~apple~CloudDocs/Documents/Codes/Base/setup_base.sh"
+export BASE_DIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"

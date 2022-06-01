@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libBase.a CMakeFiles/Base.dir/src/Input/CmdLnArgParser.cpp.o CMakeFiles/Base.dir/src/Output/Messenger.cpp.o CMakeFiles/Base.dir/src/NonFloatingPoint/Rational.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libBase.a
