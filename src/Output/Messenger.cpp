@@ -146,6 +146,15 @@ messenger& messenger::operator<<( const pair< double, int >& t_message )
     return *this;
 }
 
+messenger& messenger::operator<<( const rational& t_message )
+{
+    char* message = t_message.cstr();
+    for( char* i = &message[ 0 ]; *i != '\0'; i++ )
+        m_message_incomplete.m_message += *i;
+
+    return *this;
+}
+
 messenger& messenger::operator<<( const bool& t_message )
 {
     if( t_message )
@@ -155,10 +164,3 @@ messenger& messenger::operator<<( const bool& t_message )
 
     return *this;
 }
-
-//// This function and specifically the object it creates
-//// are only used to avoid a link error
-//void fixLinkError()
-//{
-//    messenger doNotUse;
-//}

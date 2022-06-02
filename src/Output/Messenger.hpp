@@ -7,6 +7,8 @@
 #include <queue>
 #include <utility>
 
+#include "Rational.hpp"
+
 using std::ostream;
 using std::cout;
 using std::string;
@@ -38,6 +40,7 @@ class messenger {
         messenger& operator<<( const int                &  t_message );
         messenger& operator<<( const double             &  t_message );
         messenger& operator<<( const pair< double, int >&  t_message );
+        messenger& operator<<( const rational           &  t_message );
         messenger& operator<<( const bool               &  t_message );
         void       end       ( bool t_end = true ) { m_end = t_end; };
 

@@ -23,14 +23,18 @@ using std::ostream;
 class rational
 {
     public:
-        rational();
-        rational( const int    & t_int    );
-        rational( const int   && t_int    );
+        rational( void ) {};
+        rational( const int    & t_int    ): m_int{ t_int }, m_dec{ 0 } {};
+        rational( const int   && t_int    ): m_int{ t_int }, m_dec{ 0 } {};
         rational( const double & t_double );
         rational( const double&& t_double );
-        rational( const rational & t_rational );
-        rational( const rational&& t_rational );
-       ~rational();
+        rational( const rational & t_rational ): m_int{ t_rational.m_int }, m_dec{ t_rational.m_dec } {};
+        rational( const rational&& t_rational ): m_int{ t_rational.m_int }, m_dec{ t_rational.m_dec } {};
+        rational( const int & t_int, const unsigned int & t_dec ): m_int{ t_int }, m_dec{ t_dec } {};
+        rational( const int&& t_int, const unsigned int & t_dec ): m_int{ t_int }, m_dec{ t_dec } {};
+        rational( const int & t_int, const unsigned int&& t_dec ): m_int{ t_int }, m_dec{ t_dec } {};
+        rational( const int&& t_int, const unsigned int&& t_dec ): m_int{ t_int }, m_dec{ t_dec } {};
+       ~rational( void ) {};
 
         rational& operator=( const int      & t_int      );
         rational& operator=( const int     && t_int      );
@@ -51,6 +55,8 @@ class rational
         rational& operator+=( const double  && t_double   );
         rational& operator+=( const rational & t_rational );
         rational& operator+=( const rational&& t_rational );
+        rational& operator++( void ); // pre
+        rational& operator++( int );  // post
 
         rational& operator- ( const int      & t_int      ) const;
         rational& operator- ( const int     && t_int      ) const;
@@ -64,6 +70,8 @@ class rational
         rational& operator-=( const double  && t_double   );
         rational& operator-=( const rational & t_rational );
         rational& operator-=( const rational&& t_rational );
+        rational& operator--( void ); // pre
+        rational& operator--( int );  // post
 
         rational& operator* ( const int      & t_int      ) const;
         rational& operator* ( const int     && t_int      ) const;
@@ -135,24 +143,14 @@ class rational
         friend ostream& operator>>( ostream& t_ostream, const rational & t_rational );
         friend ostream& operator>>( ostream& t_ostream, const rational&& t_rational );
 
-    private:
+        char*& cstr( void ) const;
+
+        // Class data
                  int m_int = 0;
-        unsigned int m_dec = 0;
+        unsigned int m_dec = 0; // NOTE: unsigned ints can go up to 10 digits; however that doesn't mean they go to 9,999,999,999.
+                                // Thus, class members that use digits will only go up to 9 digits.
 };
 
-int& exp( const int& t_base, const int& t_exponent )
-{
-    int out = 1;
-
-    if( t_exponent < 0 ) {
-        std::cout << "ERROR: exp does not currently support t_exponent < 0" << std::endl;
-        return out;
-    }
-
-    for( int i = 0; i < t_exponent; i++ )
-        out *= t_base;
-
-    return out;
-}
+int& exp( const int& t_base, const int& t_exponent );
 
 #endif //BASE_RATIONAL_HPP
