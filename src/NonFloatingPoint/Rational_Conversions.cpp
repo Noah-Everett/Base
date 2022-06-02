@@ -18,16 +18,25 @@ char*& rational::cstr( void ) const
     char* str = new char[ strSize ];
 
     unsigned int pos{ 0 };
-    unsigned int curExp;
-    for( int w_int{ m_int }, nDigit{ nDigits_int - 1 }; nDigit > -1; pos++, w_int -= w_int / curExp, nDigit-- ) {
-        str[ pos ] = w_int / exp( 10, nDigit );
+    for( int w_int{ m_int }, nDigit{ nDigits_int - 1 }, digit{ 0 }, curExp{ 0 };
+         nDigit > -1;
+         pos++, w_int -= digit * curExp, nDigit-- ) {
+        curExp = exp( 10, nDigit );
+        digit = w_int / curExp;
+        str[ pos ] = digit + 48;
     }
 
-    str[ ++pos ] = '.';
+    str[ pos++ ] = '.';
 
-    for( unsigned int w_dec{ m_dec }, nDigit{ nDigits_dec - 1 }; nDigit > -1; pos++, w_dec -= w_dec / curExp, nDigit-- ) {
-        str[ pos ] = w_dec / exp( 10, nDigit );
+    for( int w_dec = m_dec, nDigit = nDigits_dec - 1, digit{ 0 }, curExp{ 0 };
+         nDigit > -1;
+         pos++, w_dec -= digit * curExp, nDigit-- ) {
+        curExp = exp( 10, nDigit );
+        digit = w_dec / curExp;
+        str[ pos ] = digit + 48;
     }
 
-    str[ ++pos ] = '\0';
+    str[ pos ] = '\0';
+
+    return str;
 }
