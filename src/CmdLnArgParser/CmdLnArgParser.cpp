@@ -1,8 +1,11 @@
 #include "CmdLnArgParser.hpp"
-#include "../Output/Messenger.hpp"
+#include "Messenger.hpp"
 
 using std::invalid_argument;
 using std::find;
+
+using namespace Base::CmdLnArgParser;
+using namespace Base::Messenger;
 
 string ctos( char* cstr )
 {

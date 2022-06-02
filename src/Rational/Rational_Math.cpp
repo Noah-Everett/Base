@@ -1,8 +1,6 @@
-//
-// Created by Noah Everett on 6/1/22.
-//
-
 #include "Rational.hpp"
+
+using namespace Base::Rational;
 
 int& exp( const int& t_base, const int& t_exponent )
 {

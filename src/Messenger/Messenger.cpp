@@ -5,6 +5,8 @@
 
 using std::endl;
 
+using namespace Base::Messenger;
+
 messenger::messenger( ostream& t_ostream, const string& t_welcome,
                       const string& t_file, const string& t_function, const int& t_line )
 {

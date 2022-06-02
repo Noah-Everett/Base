@@ -1,8 +1,6 @@
-//
-// Created by Noah Everett on 6/1/22.
-//
-
 #include "Rational.hpp"
+
+using namespace Base::Rational;
 
 rational::rational( const double& t_double )
 {

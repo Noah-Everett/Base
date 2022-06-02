@@ -16,6 +16,10 @@ using std::thread;
 using std::queue;
 using std::pair;
 
+using Base::Rational;
+
+namespace Base::Messenger {
+
 #define LOCATION __FILE__, __FUNCTION__, __LINE__
 
 const string k_pNull    = "";
@@ -74,5 +78,7 @@ messenger& messenger::operator<<( const t_class& t_message )
 }
 
 extern messenger messenger_c;
+
+}
 
 #endif

@@ -1,13 +1,11 @@
-//
-// Created by Noah Everett on 6/1/22.
-//
-
 #ifndef BASE_RATIONAL_HPP
 #define BASE_RATIONAL_HPP
 
 #include <iostream>
 
 using std::ostream;
+
+namespace Base::Rational {
 
 //const unsigned int kE0 = 1;
 //const unsigned int kE1 = 10;
@@ -147,10 +145,12 @@ class rational
 
         // Class data
                  int m_int = 0;
-        unsigned int m_dec = 0; // NOTE: unsigned ints can go up to 10 digits; however that doesn't mean they go to 9,999,999,999.
-                                // Thus, class members that use digits will only go up to 9 digits.
+        unsigned int m_dec = 0; // NOTE: Unsigned ints can go up to 10 digits; however that doesn't mean they go to 9,999,999,999 (they don't).
+                                // Thus, class members that walk through digits will only go up to 9 digits.
 };
 
 int& exp( const int& t_base, const int& t_exponent );
+
+}
 
 #endif //BASE_RATIONAL_HPP

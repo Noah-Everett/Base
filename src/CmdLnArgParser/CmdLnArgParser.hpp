@@ -8,6 +8,8 @@ using std::vector;
 using std::string;
 using std::tolower;
 
+namespace Base::CmdLnArgParser {
+
 class parser {
     public:
         parser( int t_argc, char** t_argv,
@@ -34,6 +36,8 @@ class parser {
         vector< string > m_optsNArg_opt;
         vector< optArg > m_optsArgs;
 };
+
+}
 
 #endif
 
