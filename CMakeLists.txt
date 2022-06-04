@@ -13,7 +13,7 @@ add_library( Base
              src/Rational/Rational_Operator_Addition.cpp
              src/Rational/Rational_Output.cpp
              src/Rational/Rational_Conversions.cpp
-             src/Rational/Rational_Math.cpp )
+             src/Rational/Rational_Math.cpp src/Messenger/Verbosity.hpp )
 target_include_directories( Base BEFORE PUBLIC
                             src/CmdLnArgParser/
                             src/Messenger/

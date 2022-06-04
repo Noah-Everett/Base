@@ -16,20 +16,34 @@ using std::thread;
 using std::queue;
 using std::pair;
 
-using Base::Rational;
+using namespace Base::Rational;
 
 namespace Base::Messenger {
 
 #define LOCATION __FILE__, __FUNCTION__, __LINE__
 
-const string k_pNull    = "";
-const string k_pInfo    = "INFO";
-const string k_pNotice  = "NOTICE";
-const string k_pWarning = "WARNING";
-const string k_pError   = "ERROR";
-const string k_pFatal   = "FATAL";
 
-class messenger {
+class message
+{
+    public:
+        message( const int& t_verbosity = 0 );
+       ~message( void );
+
+        bool add  ( char*& t_cstr );
+        void clear( void          );
+
+    protected:
+        struct node {
+            char* m_cstr;
+            node* m_next;
+        };
+        node  m_first;
+        node* cur; // also end of chain
+        int  m_verbosity;
+};
+
+class messenger : message
+{
     public:
         messenger( ostream& t_ostream = cout, const string& welcome = "",
                   const string& file = __FILE__, const string& function = __FUNCTION__, const int& line = __LINE__ );
@@ -40,18 +54,19 @@ class messenger {
         messenger& operator()( const string& t_priority, const string& t_file,
                                const string& t_function, const int& t_line );
         template< class t_class >
-        messenger& operator<<( const t_class            &  t_message );
-        messenger& operator<<( const int                &  t_message );
-        messenger& operator<<( const double             &  t_message );
-        messenger& operator<<( const pair< double, int >&  t_message );
-        messenger& operator<<( const rational           &  t_message );
-        messenger& operator<<( const bool               &  t_message );
+        messenger& operator<<( const t_class            & t_message );
+        messenger& operator<<( const char*              & t_message );
+        messenger& operator<<( const int                & t_message );
+        messenger& operator<<( const double             & t_message );
+        messenger& operator<<( const pair< double, int >& t_message );
+        messenger& operator<<( const rational           & t_message );
+        messenger& operator<<( const bool               & t_message );
         void       end       ( bool t_end = true ) { m_end = t_end; };
 
     private:
         struct message {
             string m_priority;
-            string m_message;
+            char** m_message = new char*[ 100 ];
             string m_file;
             string m_function;
             int    m_line;

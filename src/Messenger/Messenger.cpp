@@ -71,6 +71,14 @@ void messenger::output( const message& t_message )
                << " (" << t_message.m_line << ")> : " << t_message.m_message << endl;
 }
 
+messenger& messenger::operator<<( const char*& t_message )
+{
+
+    m_message_incomplete.m_message += message_str;
+
+    return *this;
+}
+
 messenger& messenger::operator<<( const int& t_message )
 {
     int message_int = t_message;
