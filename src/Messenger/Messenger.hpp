@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "Rational.hpp"
+#include "Verbosity.hpp"
 
 using std::ostream;
 using std::cout;
@@ -22,27 +23,27 @@ namespace Base::Messenger {
 
 #define LOCATION __FILE__, __FUNCTION__, __LINE__
 
-
-class message
+class stringList
 {
     public:
-        message( const int& t_verbosity = 0 );
-       ~message( void );
+        stringList( void ) {};
+       ~stringList( void );
 
-        bool add  ( char*& t_cstr );
+        void add  ( char*& t_cstr );
         void clear( void          );
+        friend ostream& operator<<( ostream& t_ostream, stringList& t_stringList );
 
-    protected:
+    private:
         struct node {
             char* m_cstr;
-            node* m_next;
+            node* m_next{ nullptr };
         };
-        node  m_first;
-        node* cur; // also end of chain
-        int  m_verbosity;
+        node* m_first = new node;
+        node* m_cur{ m_first };
+        node* m_end{ m_first };
 };
 
-class messenger : message
+class messenger
 {
     public:
         messenger( ostream& t_ostream = cout, const string& welcome = "",
@@ -65,11 +66,11 @@ class messenger : message
 
     private:
         struct message {
-            string m_priority;
-            char** m_message = new char*[ 100 ];
-            string m_file;
-            string m_function;
-            int    m_line;
+            string     m_priority;
+            stringList m_stringList;
+            string     m_file;
+            string     m_function;
+            int        m_line;
         };
         ostream*         m_ostream;
         thread*          m_thread;

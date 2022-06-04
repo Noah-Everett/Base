@@ -7,6 +7,46 @@ using std::endl;
 
 using namespace Base::Messenger;
 
+stringList::~stringList( void )
+{
+    if( m_first->m_next == nullptr ) { // If only one node exists
+        delete m_first;
+        return;
+    }
+
+    m_cur = m_first;
+    m_end = m_cur->m_next;
+    while( m_end->m_next != nullptr ) {
+       delete m_cur;
+       m_end = m_cur;
+       m_end = m_end->m_next;
+    }
+    delete m_cur;
+    delete m_end;
+}
+
+void stringList::add( char*& t_cstr )
+{
+    m_end->m_cstr = new char{ *t_cstr };
+    m_end->m_next = new node;
+    m_end = m_end->m_next;
+}
+
+void stringList::clear( void )
+{
+    m_end = m_first;
+}
+
+namespace Base::Messenger {
+ostream& operator<<( ostream& t_ostream, stringList& t_stringList )
+{
+    t_stringList.m_cur = t_stringList.m_first;
+    while( t_stringList.m_cur != t_stringList.m_end )
+        t_ostream << t_stringList.m_cur->m_cstr;
+    t_ostream << t_stringList.m_cur->m_cstr;
+}
+}
+
 messenger::messenger( ostream& t_ostream, const string& t_welcome,
                       const string& t_file, const string& t_function, const int& t_line )
 {
@@ -14,7 +54,7 @@ messenger::messenger( ostream& t_ostream, const string& t_welcome,
 
     *m_ostream << t_welcome << endl;
     m_thread = new thread( &messenger::main, this );
-    m_message_incomplete = { k_pNotice, "Instance of \`messager\` class created.",
+    m_message_incomplete = { k_vInfo, "Instance of \`messager\` class created.",
                              t_file, t_function, t_line };
 }
 
