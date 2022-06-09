@@ -1,5 +1,4 @@
 #include <chrono>
-#include <math.h>
 
 #include "Messenger.hpp"
 
@@ -25,7 +24,14 @@ stringList::~stringList( void )
     delete m_end;
 }
 
-void stringList::add( char*& t_cstr )
+void stringList::add( const char*& t_cstr )
+{
+    m_end->m_cstr = new char{ *t_cstr };
+    m_end->m_next = new node;
+    m_end = m_end->m_next;
+}
+
+void stringList::operator=( char*& t_cstr )
 {
     m_end->m_cstr = new char{ *t_cstr };
     m_end->m_next = new node;
@@ -47,20 +53,20 @@ ostream& operator<<( ostream& t_ostream, stringList& t_stringList )
 }
 }
 
-messenger::messenger( ostream& t_ostream, const string& t_welcome,
-                      const string& t_file, const string& t_function, const int& t_line )
+messenger::messenger( ostream& t_ostream, const char*& t_welcome,
+                      const char*& t_file, const char*& t_function, const int& t_line ):
+                      m_incompleteMessage{ new message{ k_vInfo, "Instance of \`messager\` class created.",
+                                                        t_file, t_function, t_line } }
 {
     m_ostream = &t_ostream;
 
     *m_ostream << t_welcome << endl;
     m_thread = new thread( &messenger::main, this );
-    m_message_incomplete = { k_vInfo, "Instance of \`messager\` class created.",
-                             t_file, t_function, t_line };
 }
 
 messenger::~messenger()
 {
-    m_queue.push( m_message_incomplete );
+    m_queue.enqueue( m_incompleteMessage );
     std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
     m_end = true;
     m_thread->join();
@@ -69,52 +75,45 @@ messenger::~messenger()
 
 void messenger::main()
 {
-    while( !m_end ) {
-        if( !m_queue.empty() ) {
-            output( m_queue.front() );
-            m_queue.pop();
-        }
-    }
+    while( !m_end )
+        if( !m_queue.isEmpty() )
+            output( m_queue.dequeue() );
 }
 
-void messenger::print( const string& t_priority, const string& t_message,
-                       const string& t_file, const string& t_function, const int& t_line )
+void messenger::print( const char*& t_priority, const char*& t_message,
+                       const char*&& t_file, const char*&& t_function, const int&& t_line )
 {
-    m_queue.push( { t_priority, t_message,
-                    t_file, t_function, t_line } );
+    m_queue.enqueue( m_incompleteMessage );
+    m_incompleteMessage = new message{ t_priority, t_message,
+                                       t_file, t_function, t_line };
 }
 
-messenger& messenger::operator()( const string& t_priority,
-                                  const string& t_file, const string& t_function, const int& t_line )
+messenger& messenger::operator()( const char*& t_priority,
+                                  const char*&& t_file, const char*&& t_function, const int&& t_line )
 {
-    m_queue.push( m_message_incomplete );
-    m_message_incomplete = { "", "", "", "", 0 };
-
-    m_message_incomplete.m_priority = t_priority;
-    m_message_incomplete.m_file = t_file;
-    m_message_incomplete.m_function = t_function;
-    m_message_incomplete.m_line = t_line;
+    m_queue.enqueue( m_incompleteMessage );
+    m_incompleteMessage = new message{ t_priority, "", t_file, t_function, t_line };
 
     return *this;
 }
 
-void messenger::output( const string& t_priority, const string& t_message,
-                        const string& t_file, const string& t_function, const int& t_line )
+void messenger::output( const char*& t_priority, const char*& t_message,
+                        const char*&& t_file, const char*&& t_function, const int&& t_line )
 {
     *m_ostream << t_priority << " <" << t_file << "::" << t_function
                << " (" << t_line << ")> : " << t_message << endl;
 }
 
-void messenger::output( const message& t_message )
+void messenger::output( message& t_message )
 {
-    *m_ostream << t_message.m_priority << " <" << t_message.m_file << "::" << t_message.m_function
-               << " (" << t_message.m_line << ")> : " << t_message.m_message << endl;
+    *m_ostream << t_message.m_verbosity << " <" << t_message.m_file << "::" << t_message.m_function
+               << " (" << t_message.m_line << ")> : " << t_message.m_stringList << endl;
 }
 
 messenger& messenger::operator<<( const char*& t_message )
 {
 
-    m_message_incomplete.m_message += message_str;
+    m_incompleteMessage->m_stringList.add( t_message );
 
     return *this;
 }
@@ -122,18 +121,20 @@ messenger& messenger::operator<<( const char*& t_message )
 messenger& messenger::operator<<( const int& t_message )
 {
     int message_int = t_message;
-    string message_str = "";
 
     int digits = 0;
-    while( t_message / int( pow( 10, digits ) ) != 0 )
+    while( t_message / exp( 10, digits ) != 0 )
         ++digits;
+    char* message_str = new char[ digits + 1 ];
+    message_str[ digits ] = '\0';
 
-    for( int i = digits - 1; i > -1 ; i-- ) {
-        message_str += message_int / int( pow( 10, i ) ) + 48;
-        message_int -= message_int / int( pow( 10, i ) ) * int( pow( 10, i ) );
+    for( int pow = digits - 1, i = 0; pow > -1 ; pow--, i++ ) {
+        message_str[ i ] = message_int / exp( 10, pow ) + 48;
+        message_int -= message_int / exp( 10, pow ) * exp( 10, pow );
     }
 
-    m_message_incomplete.m_message += message_str;
+    const char* message_str_const{ message_str }; // To my knowledge there is no way around this.
+    m_incompleteMessage->m_stringList.add( message_str_const );
 
     return *this;
 }
@@ -149,8 +150,8 @@ messenger& messenger::operator<<( const double& t_message )
         ++digits;
 
     for( int i = digits - 1; i > -1 ; i-- ) {
-        message_str += message_int / int( pow( 10, i ) ) + 48;
-        message_int -= message_int / int( pow( 10, i ) ) * int( pow( 10, i ) );
+        message_str += message_int / exp( 10, i ) + 48;
+        message_int -= message_int / exp( 10, i ) * exp( 10, i );
     }
 
     // Decimal
@@ -162,7 +163,7 @@ messenger& messenger::operator<<( const double& t_message )
         message_double = message_double * 10.0 - floor( message_double * 10 );
     }
 
-    m_message_incomplete.m_message += message_str;
+    m_incompleteMessage.m_message += message_str;
 
     return *this;
 }
@@ -191,7 +192,7 @@ messenger& messenger::operator<<( const pair< double, int >& t_message )
         message_double = message_double * 10.0 - floor( message_double * 10 );
     }
 
-    m_message_incomplete.m_message += message_str;
+    m_incompleteMessage.m_message += message_str;
 
     return *this;
 }
@@ -200,7 +201,7 @@ messenger& messenger::operator<<( const rational& t_message )
 {
     char* message = t_message.cstr();
     for( char* i = &message[ 0 ]; *i != '\0'; i++ )
-        m_message_incomplete.m_message += *i;
+        m_incompleteMessage.m_message += *i;
 
     return *this;
 }
@@ -208,9 +209,9 @@ messenger& messenger::operator<<( const rational& t_message )
 messenger& messenger::operator<<( const bool& t_message )
 {
     if( t_message )
-        m_message_incomplete.m_message += "1";
+        m_incompleteMessage.m_message += "1";
     else
-        m_message_incomplete.m_message += "0";
+        m_incompleteMessage.m_message += "0";
 
     return *this;
 }

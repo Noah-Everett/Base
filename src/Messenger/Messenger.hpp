@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <thread>
-#include <queue>
 #include <utility>
 
 #include "Rational.hpp"
@@ -14,31 +13,57 @@ using std::ostream;
 using std::cout;
 using std::string;
 using std::thread;
-using std::queue;
 using std::pair;
 
 using namespace Base::Rational;
 
 namespace Base::Messenger {
 
+const char* k_NUL = new char[ 1 ]{ '\0' };
+
 #define LOCATION __FILE__, __FUNCTION__, __LINE__
 
 class stringList
 {
     public:
-        stringList( void ) {};
+        stringList( const char*&& t_cstr ): m_first{ new node{ t_cstr } } {};
+        stringList( const char*&  t_cstr ): m_first{ new node{ t_cstr } } {};
        ~stringList( void );
 
-        void add  ( char*& t_cstr );
-        void clear( void          );
+        void add      ( const char*& t_cstr );
+        void operator=( const char*& t_cstr ); // Same as add()
+        void clear    ( void                );
         friend ostream& operator<<( ostream& t_ostream, stringList& t_stringList );
 
     private:
         struct node {
-            char* m_cstr;
+            const char* m_cstr;
             node* m_next{ nullptr };
         };
-        node* m_first = new node;
+        node* m_first;
+        node* m_cur{ m_first };
+        node* m_end{ m_first };
+};
+
+template< class t_class >
+class queue // Uses variables passed in (doesn't allocate any new memory)
+            //                          (hence the reason to reinvent the wheel, per se)
+{
+    public:
+        queue( t_class*& t_obj ): m_first{ new node{ t_obj } } {};
+        queue( void );
+       ~queue( void );
+
+        void     enqueue( t_class*& t_obj );
+        t_class& dequeue( void            );
+        bool&    isEmpty( void            );
+
+    private:
+        struct node {
+            t_class m_class;
+            t_class* m_next = nullptr;
+        };
+        node* m_first;
         node* m_cur{ m_first };
         node* m_end{ m_first };
 };
@@ -46,17 +71,16 @@ class stringList
 class messenger
 {
     public:
-        messenger( ostream& t_ostream = cout, const string& welcome = "",
-                  const string& file = __FILE__, const string& function = __FUNCTION__, const int& line = __LINE__ );
+        messenger( ostream& t_ostream = cout, const char*& welcome = k_NUL,
+                  const char*& file = k_NUL, const char*& function = k_NUL, const int& line = 0 );
        ~messenger();
 
-        void       print     ( const string& priority, const string& message,
-                               const string& file, const string& function, const int& line );
-        messenger& operator()( const string& t_priority, const string& t_file,
-                               const string& t_function, const int& t_line );
-        template< class t_class >
-        messenger& operator<<( const t_class            & t_message );
+        void       print     ( const char*& priority, const char*& message,
+                               const char*&& file, const char*&& function, const int&& line );
+        messenger& operator()( const char*& t_priority,
+                               const char*&& t_file, const char*&& t_function, const int&& t_line );
         messenger& operator<<( const char*              & t_message );
+        messenger& operator<<( const string             & t_message );
         messenger& operator<<( const int                & t_message );
         messenger& operator<<( const double             & t_message );
         messenger& operator<<( const pair< double, int >& t_message );
@@ -66,32 +90,23 @@ class messenger
 
     private:
         struct message {
-            string     m_priority;
-            stringList m_stringList;
-            string     m_file;
-            string     m_function;
-            int        m_line;
+            const char*& m_verbosity;
+            stringList   m_stringList;
+            const char*& m_file;
+            const char*& m_function;
+            const int  & m_line;
         };
         ostream*         m_ostream;
         thread*          m_thread;
         queue< message > m_queue;
-        message          m_message_incomplete;
-        int              m_verbosity;                //// IMPLEMENT
+        message*         m_incompleteMessage;
         bool             m_end = false;
 
         void main();
-        void output( const message& t_message );
-        void output( const string& t_priority, const string& t_message,
-                     const string& t_file, const string& t_function, const int& t_line );
+        void output( message& t_message );
+        void output( const char*& t_priority, const char*& t_message,
+                     const char*&& t_file, const char*&& t_function, const int&& t_line );
 };
-
-template< class t_class >
-messenger& messenger::operator<<( const t_class& t_message )
-{
-    m_message_incomplete.m_message += t_message;
-
-    return *this;
-}
 
 extern messenger messenger_c;
 
