@@ -12,14 +12,15 @@ class queue // Uses variables passed in. (doesn't allocate any new memory)
             //                           (hence the reason to reinvent the wheel, per se)
 {
     public:
-        queue( void                  );
-        queue( const t_class*& t_obj );
-       ~queue( void                  );
+        queue( void            );
+        queue( t_class*& t_obj );
+       ~queue( void            );
 
-        void      enqueue( const t_class*& t_obj );
-        t_class*& dequeue( void                  );
-        void      clear  ( void                  );
-        bool&&    isEmpty( void                  );
+        void      enqueue( t_class*& t_obj );
+        void      enqueue( t_class & t_obj );
+        t_class*& dequeue( void            );
+        void      clear  ( void            );
+        bool&&    isEmpty( void            );
 
     private:
         struct node {

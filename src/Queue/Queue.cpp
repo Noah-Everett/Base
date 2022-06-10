@@ -35,6 +35,18 @@ void queue< t_class >::enqueue( const t_class*& t_obj )
 }
 
 template< class t_class >
+void queue< t_class >::enqueue( const t_class& t_obj )
+{
+    if( m_first == nullptr ) { // If queue is empty
+        m_first = new node{ &t_obj };
+        m_end = m_first;
+    } else { // If queue is not empty
+        m_end->m_next = new node{ t_obj };
+        m_end = m_end->m_next;
+    }
+}
+
+template< class t_class >
 t_class*& queue< t_class >::dequeue( void )
 {
     m_temp_obj = m_first->m_obj;

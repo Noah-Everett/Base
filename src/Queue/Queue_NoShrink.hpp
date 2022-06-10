@@ -14,14 +14,20 @@ class queue_noShrink // Uses variables passed in (doesn't allocate any new memor
                      // This is queue is circularly linked.
 {
     public:
-        queue_noShrink( void                  );
+        queue_noShrink( void            );
+        queue_noShrink(       t_class*& t_obj );
         queue_noShrink( const t_class*& t_obj );
-       ~queue_noShrink( void                  );
+        queue_noShrink(       t_class & t_obj );
+        queue_noShrink( const t_class & t_obj );
+       ~queue_noShrink( void            );
 
+        void      enqueue(       t_class*& t_obj );
         void      enqueue( const t_class*& t_obj );
-        t_class*& dequeue( void                  );
-        void      clear  ( void                  );
-        bool&&    isEmpty( void                  );
+        void      enqueue(       t_class & t_obj );
+        void      enqueue( const t_class & t_obj );
+        t_class*& dequeue( void            );
+        void      clear  ( void            );
+        bool&&    isEmpty( void            );
 
     private:
         struct node {

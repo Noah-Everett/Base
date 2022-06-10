@@ -6,72 +6,6 @@ using std::endl;
 
 using namespace Base::Messenger;
 
-queue_string::queue_string( const char*&& t_cstr ): m_first{ new node{ t_cstr } }
-{
-};
-
-queue_string::queue_string( const char*&  t_cstr ): m_first{ new node{ t_cstr } }
-{
-};
-
-queue_string::~queue_string( void )
-{
-    if( m_first->m_next == nullptr ) { // If only one node exists
-        delete m_first;
-        return;
-    }
-
-    m_cur = m_first;
-    m_end = m_cur->m_next;
-    while( m_end->m_next != nullptr ) {
-       delete m_cur;
-       m_end = m_cur;
-       m_end = m_end->m_next;
-    }
-    delete m_cur;
-    delete m_end;
-}
-
-void queue_string::add( const char*& t_cstr )
-{
-    m_end->m_cstr = new char{ *t_cstr };
-    m_end->m_next = new node;
-    m_end = m_end->m_next;
-}
-
-void queue_string::operator=( const char*& t_cstr )
-{
-    m_end->m_cstr = new char{ *t_cstr };
-    m_end->m_next = new node;
-    m_end = m_end->m_next;
-}
-
-void queue_string::clear( void )
-{
-    m_end = m_first;
-}
-
-queue::queue( t_class*&  t_obj ): m_first{ new node{ t_obj } }
-{
-
-};
-
-template< class t_class >
-queue::queue< t_class >( t_class*&& t_obj ): m_first{ new node{ t_obj } }
-{
-
-};
-
-namespace Base::Messenger {
-ostream& operator<<( ostream& t_ostream, queue_string& t_queue_string )
-{
-    t_queue_string.m_cur = t_queue_string.m_first;
-    while( t_queue_string.m_cur != t_queue_string.m_end )
-        t_ostream << t_queue_string.m_cur->m_cstr;
-    t_ostream << t_queue_string.m_cur->m_cstr;
-}
-}
-
 messenger::messenger( ostream& t_ostream, const char*& t_welcome,
                       const char*& t_file, const char*& t_function, const int& t_line ):
                       m_incompleteMessage{ new message{ k_vInfo, "Instance of \`messager\` class created.",
@@ -99,7 +33,7 @@ void messenger::main()
             output( m_queue.dequeue() );
 }
 
-void messenger::print( const char*& t_priority, const char*& t_message,
+void messenger::print( const char*& t_priority, char*& t_message,
                        const char*&& t_file, const char*&& t_function, const int&& t_line )
 {
     m_queue.enqueue( m_incompleteMessage );
@@ -123,16 +57,19 @@ void messenger::output( const char*& t_priority, const char*& t_message,
                << " (" << t_line << ")> : " << t_message << endl;
 }
 
-void messenger::output( message& t_message )
+void messenger::output( message*& t_message )
 {
-    *m_ostream << t_message.m_verbosity << " <" << t_message.m_file << "::" << t_message.m_function
-               << " (" << t_message.m_line << ")> : " << t_message.m_stringList << endl;
+    *m_ostream << t_message->m_verbosity << " <" << t_message->m_file << "::" << t_message->m_function
+               << " (" << t_message->m_line << ")> : ";
+    while( !t_message->m_string.isEmpty() )
+        *m_ostream << t_message->m_string.dequeue();
+    *m_ostream << endl;
 }
 
-messenger& messenger::operator<<( const char*& t_message )
+messenger& messenger::operator<<( char*& t_message )
 {
 
-    m_incompleteMessage->m_stringList.add( t_message );
+    m_incompleteMessage->m_string.enqueue( t_message );
 
     return *this;
 }
@@ -152,8 +89,7 @@ messenger& messenger::operator<<( const int& t_message )
         message_int -= message_int / exp( 10, pow ) * exp( 10, pow );
     }
 
-    const char* message_str_const{ message_str }; // To my knowledge there is no way around this.
-    m_incompleteMessage->m_stringList.add( message_str_const );
+    m_incompleteMessage->m_string.enqueue( message_str );
 
     return *this;
 }

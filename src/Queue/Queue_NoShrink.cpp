@@ -17,6 +17,11 @@ queue_noShrink< t_class >::queue_noShrink( const t_class*& t_obj ): m_first{ new
 }
 
 template< class t_class >
+queue_noShrink< t_class >::queue_noShrink( const t_class& t_obj ): m_first{ new node{ &t_obj } }
+{
+}
+
+template< class t_class >
 queue_noShrink< t_class >::~queue_noShrink< t_class >( void )
 {
     m_end = m_first;

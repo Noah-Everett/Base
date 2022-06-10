@@ -9,6 +9,7 @@
 #include "Rational.hpp"
 #include "Verbosity.hpp"
 #include "Queue.hpp"
+#include "Queue_NoShrink.hpp"
 
 using std::ostream;
 using std::cout;
@@ -17,7 +18,8 @@ using std::thread;
 using std::pair;
 
 using namespace Base::Rational;
-using namespace Base::Queue;
+using namespace Base::Queue::Queue;
+using namespace Base::Queue::Queue_NoShrink;
 
 namespace Base::Messenger {
 
@@ -47,11 +49,11 @@ class messenger
 
     private:
         struct message {
-            const char*& m_verbosity;
-            stringList   m_stringList;
-            const char*& m_file;
-            const char*& m_function;
-            const int  & m_line;
+            const char*&            m_verbosity;
+            queue_noShrink< char* > m_string;
+            const char*&            m_file;
+            const char*&            m_function;
+            const int  &            m_line;
         };
         ostream*         m_ostream;
         thread*          m_thread;
@@ -60,7 +62,7 @@ class messenger
         bool             m_end = false;
 
         void main();
-        void output( message& t_message );
+        void output( message*& t_message );
         void output( const char*& t_priority, const char*& t_message,
                      const char*&& t_file, const char*&& t_function, const int&& t_line );
 };
