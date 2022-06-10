@@ -8,6 +8,7 @@
 
 #include "Rational.hpp"
 #include "Verbosity.hpp"
+#include "Queue.hpp"
 
 using std::ostream;
 using std::cout;
@@ -16,57 +17,13 @@ using std::thread;
 using std::pair;
 
 using namespace Base::Rational;
+using namespace Base::Queue;
 
 namespace Base::Messenger {
 
 const char* k_NUL = new char[ 1 ]{ '\0' };
 
 #define LOCATION __FILE__, __FUNCTION__, __LINE__
-
-class stringList
-{
-    public:
-        stringList( const char*&& t_cstr ): m_first{ new node{ t_cstr } } {};
-        stringList( const char*&  t_cstr ): m_first{ new node{ t_cstr } } {};
-       ~stringList( void );
-
-        void add      ( const char*& t_cstr );
-        void operator=( const char*& t_cstr ); // Same as add()
-        void clear    ( void                );
-        friend ostream& operator<<( ostream& t_ostream, stringList& t_stringList );
-
-    private:
-        struct node {
-            const char* m_cstr;
-            node* m_next{ nullptr };
-        };
-        node* m_first;
-        node* m_cur{ m_first };
-        node* m_end{ m_first };
-};
-
-template< class t_class >
-class queue // Uses variables passed in (doesn't allocate any new memory)
-            //                          (hence the reason to reinvent the wheel, per se)
-{
-    public:
-        queue( t_class*& t_obj ): m_first{ new node{ t_obj } } {};
-        queue( void );
-       ~queue( void );
-
-        void     enqueue( t_class*& t_obj );
-        t_class& dequeue( void            );
-        bool&    isEmpty( void            );
-
-    private:
-        struct node {
-            t_class m_class;
-            t_class* m_next = nullptr;
-        };
-        node* m_first;
-        node* m_cur{ m_first };
-        node* m_end{ m_first };
-};
 
 class messenger
 {

@@ -6,7 +6,15 @@ using std::endl;
 
 using namespace Base::Messenger;
 
-stringList::~stringList( void )
+queue_string::queue_string( const char*&& t_cstr ): m_first{ new node{ t_cstr } }
+{
+};
+
+queue_string::queue_string( const char*&  t_cstr ): m_first{ new node{ t_cstr } }
+{
+};
+
+queue_string::~queue_string( void )
 {
     if( m_first->m_next == nullptr ) { // If only one node exists
         delete m_first;
@@ -24,32 +32,43 @@ stringList::~stringList( void )
     delete m_end;
 }
 
-void stringList::add( const char*& t_cstr )
+void queue_string::add( const char*& t_cstr )
 {
     m_end->m_cstr = new char{ *t_cstr };
     m_end->m_next = new node;
     m_end = m_end->m_next;
 }
 
-void stringList::operator=( char*& t_cstr )
+void queue_string::operator=( const char*& t_cstr )
 {
     m_end->m_cstr = new char{ *t_cstr };
     m_end->m_next = new node;
     m_end = m_end->m_next;
 }
 
-void stringList::clear( void )
+void queue_string::clear( void )
 {
     m_end = m_first;
 }
 
-namespace Base::Messenger {
-ostream& operator<<( ostream& t_ostream, stringList& t_stringList )
+queue::queue( t_class*&  t_obj ): m_first{ new node{ t_obj } }
 {
-    t_stringList.m_cur = t_stringList.m_first;
-    while( t_stringList.m_cur != t_stringList.m_end )
-        t_ostream << t_stringList.m_cur->m_cstr;
-    t_ostream << t_stringList.m_cur->m_cstr;
+
+};
+
+template< class t_class >
+queue::queue< t_class >( t_class*&& t_obj ): m_first{ new node{ t_obj } }
+{
+
+};
+
+namespace Base::Messenger {
+ostream& operator<<( ostream& t_ostream, queue_string& t_queue_string )
+{
+    t_queue_string.m_cur = t_queue_string.m_first;
+    while( t_queue_string.m_cur != t_queue_string.m_end )
+        t_ostream << t_queue_string.m_cur->m_cstr;
+    t_ostream << t_queue_string.m_cur->m_cstr;
 }
 }
 
@@ -143,11 +162,11 @@ messenger& messenger::operator<<( const double& t_message )
 {
     // Integer
     int message_int = t_message;
-    string message_str = "";
 
     int digits = 0;
-    while( message_int / int( pow( 10, digits ) ) != 0 )
+    while( message_int / exp( 10, digits ) != 0 )
         ++digits;
+    char* message_str = new char[ digits + 10 + 1 ];
 
     for( int i = digits - 1; i > -1 ; i-- ) {
         message_str += message_int / exp( 10, i ) + 48;
@@ -163,7 +182,7 @@ messenger& messenger::operator<<( const double& t_message )
         message_double = message_double * 10.0 - floor( message_double * 10 );
     }
 
-    m_incompleteMessage.m_message += message_str;
+    m_incompleteMessage->m_stringList.add( message_str );
 
     return *this;
 }
