@@ -30,8 +30,8 @@ const char* k_NUL = new char[ 1 ]{ '\0' };
 class messenger
 {
     public:
-        messenger( ostream& t_ostream = cout, const char*& welcome = k_NUL,
-                  const char*& file = k_NUL, const char*& function = k_NUL, const int& line = 0 );
+        messenger( ostream& t_ostream, const char* const& welcome,
+                   const char*&& file, const char*&& function, const int&& line );
        ~messenger();
 
         void       print     ( const char*& priority, const char*& message,
@@ -57,7 +57,7 @@ class messenger
         };
         ostream*         m_ostream;
         thread*          m_thread;
-        queue< message > m_queue;
+        queue< message* > m_queue;
         message*         m_incompleteMessage;
         bool             m_end = false;
 

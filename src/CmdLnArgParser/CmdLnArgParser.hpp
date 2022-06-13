@@ -17,12 +17,12 @@ class parser {
                 const vector< string >& t_optsNArg_req, const vector< string >& t_optsNArg_opt );
        ~parser();
 
-        bool   hasOpt       ( const string& t_opt ) const;
-        bool   getArg_bool  ( const string& t_opt ) const;
-        int    getArg_int   ( const string& t_opt ) const;
-        double getArg_double( const string& t_out ) const;
-        string getArg_string( const string& t_opt ) const;
-        string getOptsArgs_string()                 const;
+        bool   hasOpt            ( const string& t_opt ) const;
+        bool   getArg_bool       ( const string& t_opt ) const;
+        int    getArg_int        ( const string& t_opt ) const;
+        double getArg_double     ( const string& t_out ) const;
+        string getArg_string     ( const string& t_opt ) const;
+        string getOptsArgs_string( void                ) const;
 
     private:
         struct optArg {
