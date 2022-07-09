@@ -6,6 +6,7 @@
 #define BASE_QUEUE_NOSHRINK_HPP
 
 namespace Base::Queue::Queue_NoShrink {
+    const char* const k_nullStr = new char[]{ "" };
 
 // Uses variables passed in (doesn't allocate any new memory),
 // and queue can only grow. (hence the reason to reinvent the wheel, per se)
@@ -17,14 +18,14 @@ class queue_noShrink
     public:
         queue_noShrink( void                 );
         queue_noShrink( const t_class& t_obj );
-        queue_noShrink( const t_class t_obj );
+//        queue_noShrink( const t_class  t_obj );
        ~queue_noShrink( void                 );
 
         void     enqueue( const t_class& t_obj );
-        void     enqueue( const t_class  t_obj );
+//        void     enqueue( const t_class  t_obj );
         t_class& dequeue( void                 );
         void     clear  ( void                 );
-        bool&&   isEmpty( void                 );
+        bool&&   isEmpty( void                 ) const;
 
     private:
         struct node {
@@ -42,29 +43,32 @@ class queue_noShrink< t_class* >
 {
     public:
         queue_noShrink( void                        );
-        queue_noShrink( const t_class*      & t_obj );
-        queue_noShrink(       t_class*      & t_obj );
         queue_noShrink( const t_class* const& t_obj );
+//        queue_noShrink(       t_class*& t_obj );
+//        queue_noShrink( const t_class*  t_obj );
+//        queue_noShrink( const t_class*      & t_obj );
+//        queue_noShrink( const t_class* t_obj );
+//        queue_noShrink( const t_class* const& t_obj );
        ~queue_noShrink( void                        );
 
-        void      enqueue( const t_class*      & t_obj );
-        void      enqueue(       t_class* const& t_obj );
         void      enqueue( const t_class* const& t_obj );
-        t_class*& dequeue( void                        );
+//        void      enqueue(       t_class*& t_obj );
+//        void      enqueue(       t_class* const& t_obj );
+//        void      enqueue( const t_class* const& t_obj );
+        const t_class& dequeue( void                        );
         void      clear  ( void                        );
-        bool&&    isEmpty( void                        );
+        bool&&    isEmpty( void                        ) const;
 
     private:
         struct node {
-            const t_class* const& m_obj;
+            const t_class* m_obj;
             node   *  m_next{ nullptr };
         };
         node   * m_first;
         node   * m_end{ m_first };
         mutable node   * m_temp_node;
-        mutable t_class* m_temp_obj;
+        mutable const t_class* m_temp_obj;
 };
-
 
 }
 

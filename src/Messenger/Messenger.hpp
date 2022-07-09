@@ -34,10 +34,10 @@ class messenger
                    const char*&& file, const char*&& function, const int&& line );
        ~messenger();
 
-        void       print     ( const char*& priority, const char*& message,
-                               const char*&& file, const char*&& function, const int&& line );
-        messenger& operator()( const char*& t_priority,
-                               const char*&& t_file, const char*&& t_function, const int&& t_line );
+        void       print     ( const char* const& priority, const char* const& message,
+                               const char* const&& file, const char* const&& function, const int&& line );
+        messenger& operator()( const char* const& t_priority,
+                               const char* const&& t_file, const char* const&& t_function, const int&& t_line );
         messenger& operator<<( const char*              & t_message );
         messenger& operator<<( const string             & t_message );
         messenger& operator<<( const int                & t_message );
@@ -49,11 +49,11 @@ class messenger
 
     private:
         struct message {
-            const char*&            m_verbosity;
+            const char* const&      m_verbosity;
             queue_noShrink< char* > m_string;
-            const char*&            m_file;
-            const char*&            m_function;
-            const int  &            m_line;
+            const char* const&      m_file;
+            const char* const&      m_function;
+            const int        &      m_line;
         };
         ostream*         m_ostream;
         thread*          m_thread;
@@ -62,9 +62,9 @@ class messenger
         bool             m_end = false;
 
         void main();
-        void output( message*& t_message );
-        void output( const char*& t_priority, const char*& t_message,
-                     const char*&& t_file, const char*&& t_function, const int&& t_line );
+        void output( message* const& t_message );
+        void output( const char* const& t_priority, const char* const& t_message,
+                     const char* const&& t_file, const char* const&& t_function, const int&& t_line );
 };
 
 extern messenger messenger_c;

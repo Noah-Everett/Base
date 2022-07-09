@@ -33,31 +33,31 @@ void messenger::main()
             output( m_queue.dequeue() );
 }
 
-void messenger::print( const char*& t_priority, const char*& t_message,
-                       const char*&& t_file, const char*&& t_function, const int&& t_line )
+void messenger::print( const char* const& t_priority, const char* const& t_message,
+                       const char* const&& t_file, const char* const&& t_function, const int&& t_line )
 {
     m_queue.enqueue( m_incompleteMessage );
     m_incompleteMessage = new message{ t_priority, t_message,
                                        t_file, t_function, t_line };
 }
 
-messenger& messenger::operator()( const char*& t_priority,
-                                  const char*&& t_file, const char*&& t_function, const int&& t_line )
+messenger& messenger::operator()( const char* const& t_priority,
+                                  const char* const&& t_file, const char* const&& t_function, const int&& t_line )
 {
     m_queue.enqueue( m_incompleteMessage );
-    m_incompleteMessage = new message{ t_priority, "", t_file, t_function, t_line };
+    m_incompleteMessage = new message{ t_priority, k_nullStr, t_file, t_function, t_line };
 
     return *this;
 }
 
-void messenger::output( const char*& t_priority, const char*& t_message,
-                        const char*&& t_file, const char*&& t_function, const int&& t_line )
+void messenger::output( const char* const& t_priority, const char* const& t_message,
+                        const char* const&& t_file, const char* const&& t_function, const int&& t_line )
 {
     *m_ostream << t_priority << " <" << t_file << "::" << t_function
                << " (" << t_line << ")> : " << t_message << endl;
 }
 
-void messenger::output( message*& t_message )
+void messenger::output( message* const& t_message )
 {
     *m_ostream << t_message->m_verbosity << " <" << t_message->m_file << "::" << t_message->m_function
                << " (" << t_message->m_line << ")> : ";
@@ -163,10 +163,13 @@ messenger& messenger::operator<<( const rational& t_message )
 
 messenger& messenger::operator<<( const bool& t_message )
 {
-    if( t_message )
-        m_incompleteMessage->m_string.enqueue( "1" );
-    else
-        m_incompleteMessage->m_string.enqueue( "0" );
+    if( t_message ) {
+        const char* temp = new char[]{ "1" };
+        m_incompleteMessage->m_string.enqueue( temp );
+    } else {
+        const char* temp = new char[]{ "0" };
+        m_incompleteMessage->m_string.enqueue( temp );
+    }
 
     return *this;
 }

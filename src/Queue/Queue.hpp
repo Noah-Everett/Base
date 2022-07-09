@@ -18,7 +18,7 @@ class queue
        ~queue( void                 );
 
         void     enqueue( const t_class& t_obj );
-        void     enqueue(       t_class& t_obj );
+//        void     enqueue(       t_class& t_obj );
         t_class& dequeue( void                 );
         void     clear  ( void                 );
         bool&&   isEmpty( void                 );
@@ -30,8 +30,8 @@ class queue
         };
         node   * m_first;
         node   * m_end{ m_first };
-        mutable node   * m_temp_node{ m_first };
-        mutable t_class  m_temp_obj{ nullptr };
+        mutable node*   m_temp_node;
+        mutable t_class m_temp_obj;
 };
 
 template< class t_class >
@@ -39,24 +39,25 @@ class queue< t_class* >
 {
     public:
         queue( void                  );
-        queue( const t_class*& t_obj );
+        queue( const t_class* const& t_obj );
        ~queue( void                  );
 
-        void      enqueue( const t_class*& t_obj );
-        void      enqueue(       t_class*& t_obj );
-        t_class*& dequeue( void                  );
-        void      clear  ( void                  );
-        bool&&    isEmpty( void                  );
+        void      enqueue( const t_class* const& t_obj )      ;
+//        void      enqueue(       t_class*& t_obj )      ;
+//        void      enqueue(       t_class* const& t_obj )      ;
+        const t_class* const& dequeue( void                        )      ;
+        void      clear  ( void                        )      ;
+        bool&&    isEmpty( void                        ) const;
 
     private:
         struct node {
-            const t_class*& m_obj;
+            const t_class* m_obj;
             node*  m_next{ nullptr };
         };
         node   * m_first;
         node   * m_end{ m_first };
         mutable node   * m_temp_node;
-        mutable t_class* m_temp_obj;
+        mutable const t_class* m_temp_obj;
 };
 
 }
