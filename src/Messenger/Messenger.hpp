@@ -16,7 +16,7 @@ using std::thread;
 using std::queue;
 using std::pair;
 
-using Base::Rational;
+using namespace Base::Rational;
 
 namespace Base::Messenger {
 
