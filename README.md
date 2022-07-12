@@ -1,15 +1,16 @@
 # Base
  
-Base is a program builder. It contains scripts and classes to make creating programs much easier.
+Base is a general library that contains classes and scripts to make creating programs easier and better.
 
 ## Contents
 ```
-src/
-    Input/                   # contains classes that handle program inputs
-    Output/                  # contains classes that handle program's output
-    NonFloatingPoint/        # contains classes of numerical data types that are non-floating points
-setup_base.sh            # setup Base to be used by other programs
-make_main.sh             # script to generate a main.cpp file preconfigured to use Base
+src/                 # contains all source code (hpp and cpp files)
+    CmdLnArgParser/      # class for command line argument/option parsing
+    Messenger/           # class for program messaging 
+    OS/                  # OS related functions
+    Rational/            # class for non-floating point real numbers
+setup_base.sh        # setup Base to be used by other programs
+make_main.sh         # script to generate a main.cpp file preconfigured to use Base
 ```
 
 [//]: # (## Use Base with CMake Project)
