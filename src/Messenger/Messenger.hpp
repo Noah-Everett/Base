@@ -1,51 +1,52 @@
 #ifndef MESSENGER_HPP
 #define MESSENGER_HPP
 
+// std
 #include <iostream>
 #include <string>
 #include <thread>
 #include <queue>
 #include <utility>
-#include <map>
-
-#include "Rational.hpp"
-
+// #include <map>
 using std::ostream;
 using std::cout;
 using std::string;
 using std::thread;
 using std::queue;
 using std::pair;
-using std::map;
+// using std::map;
 
+// Base
+#include "Rational.hpp"
 using namespace Base::Rational;
+
+namespace Base::Messenger::Verbosity {
+extern const string null_str   ; extern const int null_int   ;
+extern const string debug_str  ; extern const int debug_int  ;
+extern const string info_str   ; extern const int info_int   ;
+extern const string warning_str; extern const int warning_int;
+extern const string error_str  ; extern const int error_int  ;
+extern const string fatal_str  ; extern const int fatal_int  ;
+extern const string verbosity_map[ 6 ];
+
+// extern const map< int, string > verbosity_map;
+extern int    verbosity_int;
+extern string verbosity_str;
+}
 
 namespace Base::Messenger {
 
 #define LOCATION __FILE__, __FUNCTION__, __LINE__
 
-const string k_pNull    = ""       ;
-const string k_pDebug   = "DEBUG"  ;
-const string k_pInfo    = "INFO"   ;
-const string k_pNotice  = "NOTICE" ;
-const string k_pWarning = "WARNING";
-const string k_pError   = "ERROR"  ;
-const string k_pFatal   = "FATAL"  ;
-
-const map< int, string > verbosity_map = { { 0, k_pFatal   }, { 1, k_pError  }, 
-                                           { 2, k_pWarning }, { 3, k_pNotice }, 
-                                           { 4, k_pInfo    }, { 5, k_pDebug  }, 
-                                           { 4, k_pNull    }                 };
-
 class messenger {
     public:
         messenger( ostream& t_ostream = cout, const string& welcome = "",
-                  const string& file = __FILE__, const string& function = __FUNCTION__, const int& line = __LINE__ );
+                   const string& file = __FILE__, const string& function = __FUNCTION__, const int& line = __LINE__ );
        ~messenger();
 
-        void       print     ( const string& priority, const string& message,
+        void       print     ( const int   & priority, const string& message,
                                const string& file, const string& function, const int& line );
-        messenger& operator()( const string& t_priority, const string& t_file,
+        messenger& operator()( const int   & t_priority, const string& t_file,
                                const string& t_function, const int& t_line );
         template< class t_class >
         messenger& operator<<( const t_class            &  t_message );
@@ -58,7 +59,7 @@ class messenger {
 
     private:
         struct message {
-            string m_priority;
+            int    m_priority;
             string m_message;
             string m_file;
             string m_function;
@@ -73,7 +74,7 @@ class messenger {
 
         void main();
         void output( const message& t_message );
-        void output( const string& t_priority, const string& t_message,
+        void output( const int   & t_priority, const string& t_message,
                      const string& t_file, const string& t_function, const int& t_line );
 };
 
@@ -85,7 +86,8 @@ messenger& messenger::operator<<( const t_class& t_message )
     return *this;
 }
 
-extern messenger messenger_c;
+// Messenger global variables (define in main file)
+extern messenger messenger_c  ;
 
 }
 
