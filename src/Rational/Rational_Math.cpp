@@ -1,7 +1,6 @@
 #include "Rational.hpp"
 
-using namespace Base::Rational;
-
+namespace Base::Rational {
 int& exp( const int& t_base, const int& t_exponent )
 {
     int out = 1;
@@ -15,4 +14,6 @@ int& exp( const int& t_base, const int& t_exponent )
         out *= t_base;
 
     return out;
+}
+
 }

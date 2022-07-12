@@ -6,6 +6,7 @@
 #include <thread>
 #include <queue>
 #include <utility>
+#include <map>
 
 #include "Rational.hpp"
 
@@ -15,6 +16,7 @@ using std::string;
 using std::thread;
 using std::queue;
 using std::pair;
+using std::map;
 
 using namespace Base::Rational;
 
@@ -22,12 +24,18 @@ namespace Base::Messenger {
 
 #define LOCATION __FILE__, __FUNCTION__, __LINE__
 
-const string k_pNull    = "";
-const string k_pInfo    = "INFO";
-const string k_pNotice  = "NOTICE";
+const string k_pNull    = ""       ;
+const string k_pDebug   = "DEBUG"  ;
+const string k_pInfo    = "INFO"   ;
+const string k_pNotice  = "NOTICE" ;
 const string k_pWarning = "WARNING";
-const string k_pError   = "ERROR";
-const string k_pFatal   = "FATAL";
+const string k_pError   = "ERROR"  ;
+const string k_pFatal   = "FATAL"  ;
+
+const map< int, string > verbosity_map = { { 0, k_pFatal   }, { 1, k_pError  }, 
+                                           { 2, k_pWarning }, { 3, k_pNotice }, 
+                                           { 4, k_pInfo    }, { 5, k_pDebug  }, 
+                                           { 4, k_pNull    }                 };
 
 class messenger {
     public:

@@ -18,11 +18,6 @@ parser::parser( int t_argc, char** t_argv,
                 const vector< string >& t_optsWArg_req, const vector< string >& t_optsWArg_opt,
                 const vector< string >& t_optsNArg_req, const vector< string >& t_optsNArg_opt )
 {
-    m_optsWArg_req = t_optsWArg_req;
-    m_optsWArg_opt = t_optsWArg_opt;
-    m_optsNArg_req = t_optsNArg_req;
-    m_optsNArg_opt = t_optsNArg_opt;
-
     // Read opts and args into member (m) data, checking for opt arg pair validity
     messenger_c( k_pNotice, LOCATION ) << "Parsing command line arguments.";
     for( int i = 1; i < t_argc; i++ ) { // exclude i = 0 (exe path)
@@ -42,20 +37,20 @@ parser::parser( int t_argc, char** t_argv,
 
     // Check all opts are valid options
     for( optArg m_optArg : m_optsArgs ) {
-        if( find( m_optsWArg_req.begin(), m_optsWArg_req.end(), m_optArg.opt ) == m_optsWArg_req.end() &&
-            find( m_optsWArg_opt.begin(), m_optsWArg_opt.end(), m_optArg.opt ) == m_optsWArg_opt.end() &&
-            find( m_optsNArg_req.begin(), m_optsNArg_req.end(), m_optArg.opt ) == m_optsNArg_req.end() &&
-            find( m_optsNArg_opt.begin(), m_optsNArg_opt.end(), m_optArg.opt ) == m_optsNArg_opt.end() ) {
+        if( find( t_optsWArg_req.begin(), t_optsWArg_req.end(), m_optArg.opt ) == t_optsWArg_req.end() &&
+            find( t_optsWArg_opt.begin(), t_optsWArg_opt.end(), m_optArg.opt ) == t_optsWArg_opt.end() &&
+            find( t_optsNArg_req.begin(), t_optsNArg_req.end(), m_optArg.opt ) == t_optsNArg_req.end() &&
+            find( t_optsNArg_opt.begin(), t_optsNArg_opt.end(), m_optArg.opt ) == t_optsNArg_opt.end() ) {
             messenger_c( k_pFatal, LOCATION ) << "Unknown command line option \"" << m_optArg.opt << "\".";
             throw invalid_argument( "Unknown command line option \"" + m_optArg.opt + "\"." );
         } else if( m_optArg.arg == "" &&
-                   find( m_optsNArg_req.begin(), m_optsNArg_req.end(), m_optArg.opt ) == m_optsNArg_req.end() &&
-                   find( m_optsNArg_opt.begin(), m_optsNArg_opt.end(), m_optArg.opt ) == m_optsNArg_opt.end() ) {
+                   find( t_optsNArg_req.begin(), t_optsNArg_req.end(), m_optArg.opt ) == t_optsNArg_req.end() &&
+                   find( t_optsNArg_opt.begin(), t_optsNArg_opt.end(), m_optArg.opt ) == t_optsNArg_opt.end() ) {
             messenger_c( k_pFatal, LOCATION ) << "Missing argument for command line option \"" << m_optArg.opt << "\".";
             throw invalid_argument( "Missing argument for command line option \"" + m_optArg.opt + "\"." );
         } else if( m_optArg.arg != "" &&
-                   find( m_optsWArg_req.begin(), m_optsWArg_req.end(), m_optArg.opt ) == m_optsWArg_req.end() &&
-                   find( m_optsWArg_opt.begin(), m_optsWArg_opt.end(), m_optArg.opt ) == m_optsWArg_opt.end() ) {
+                   find( t_optsWArg_req.begin(), t_optsWArg_req.end(), m_optArg.opt ) == t_optsWArg_req.end() &&
+                   find( t_optsWArg_opt.begin(), t_optsWArg_opt.end(), m_optArg.opt ) == t_optsWArg_opt.end() ) {
             messenger_c( k_pFatal, LOCATION ) << "Given argument for command line option \"" << m_optArg.opt
                                                              << "\" which should not have an argument.";
             throw invalid_argument( "Given argument for command line option \"" + m_optArg.opt +
@@ -64,12 +59,25 @@ parser::parser( int t_argc, char** t_argv,
     }
 
     // Check all required opts are present
-    for( string opt : m_optsWArg_req )
-        if( find( m_optsWArg_req.begin(), m_optsWArg_req.end(), opt ) == m_optsWArg_req.end() &&
-            find( m_optsNArg_req.begin(), m_optsNArg_req.end(), opt ) == m_optsNArg_req.end() ) {
+    bool present = false;
+    for( string opt : t_optsWArg_req ) {
+        present = false;
+        for( vector< optArg >::iterator i = m_optsArgs.begin(); i != m_optsArgs.end(); i++ )
+            if( i->opt == opt ) present = true;
+        if( !present ) {
             messenger_c( k_pFatal, LOCATION ) << "Missing required command line option \"" + opt + "\".";
             throw invalid_argument( "Missing reqwuired command line option \"" + opt + "\"." );
         }
+    }
+    for( string opt : t_optsNArg_req ) {
+        present = false;
+        for( vector< optArg >::iterator i = m_optsArgs.begin(); i != m_optsArgs.end(); i++ )
+            if( i->opt == opt ) present = true;
+        if( !present ) {
+            messenger_c( k_pFatal, LOCATION ) << "Missing required command line option \"" + opt + "\".";
+            throw invalid_argument( "Missing reqwuired command line option \"" + opt + "\"." );
+        }
+    }
 }
 
 parser::~parser()

@@ -20,7 +20,7 @@ class parser {
         bool   hasOpt       ( const string& t_opt ) const;
         bool   getArg_bool  ( const string& t_opt ) const;
         int    getArg_int   ( const string& t_opt ) const;
-        double getArg_double( const string& t_out ) const;
+        double getArg_double( const string& t_opt ) const;
         string getArg_string( const string& t_opt ) const;
         string getOptsArgs_string()                 const;
 
@@ -30,10 +30,6 @@ class parser {
             string arg;
         };
 
-        vector< string > m_optsWArg_req;
-        vector< string > m_optsWArg_opt;
-        vector< string > m_optsNArg_req;
-        vector< string > m_optsNArg_opt;
         vector< optArg > m_optsArgs;
 };
 
