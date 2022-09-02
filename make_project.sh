@@ -40,12 +40,18 @@ using std::cout;
 using std::string;
 using std::vector;
 
+using Base::CmdLnArgParser::parser;
+using Base::Messenger::Verbosity::fatal_int;
+
 // Constant messages
 const string k_welcome = "WELCOME MESSAGE HERE";
 const string k_help    = "PROGRAM HELP/USAGE STATEMENT HERE";
+using Base::Messenger::messenger_c;
 
 // Global console messenger
+namespace Base::Messenger {
 messenger messenger_c( cout, k_welcome, LOCATION );
+}
 
 // Possible arguments
 vector< string > optsWArg_req = {};

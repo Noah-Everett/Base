@@ -8,6 +8,7 @@
 #include <queue>
 #include <utility>
 // #include <map>
+
 using std::ostream;
 using std::cout;
 using std::string;
@@ -47,7 +48,7 @@ class messenger {
         void       print     ( const int   & priority, const string& message,
                                const string& file, const string& function, const int& line );
         messenger& operator()( const int   & t_priority, const string& t_file,
-                               const string& t_function, const int& t_line );
+                               const string& t_function, const int   & t_line );
         template< class t_class >
         messenger& operator<<( const t_class            &  t_message );
         messenger& operator<<( const int                &  t_message );
