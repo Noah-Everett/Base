@@ -67,7 +67,7 @@ parser::parser( int t_argc, char** t_argv,
             if( i->opt == opt ) present = true;
         if( !present ) {
             messenger_c( fatal_int, LOCATION ) << "Missing required command line option \"" + opt + "\".";
-            throw invalid_argument( "Missing reqwuired command line option \"" + opt + "\"." );
+            throw invalid_argument( "Missing required command line option \"" + opt + "\"." );
         }
     }
     for( string opt : t_optsNArg_req ) {
